@@ -1,0 +1,25 @@
+{
+  "name": "fm2.api.nodejs",
+  "version": "0.0.1",
+  "description": "An API backend to work with fm2.",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jlaustill/fm2.api.nodejs.git"
+  },
+  "keywords": [
+    "api",
+    "fm2",
+    "file",
+    "manager"
+  ],
+  "author": "Joshua Austill",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jlaustill/fm2.api.nodejs/issues"
+  },
+  "homepage": "https://github.com/jlaustill/fm2.api.nodejs"
+}
