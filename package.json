@@ -21,5 +21,14 @@
   "bugs": {
     "url": "https://github.com/jlaustill/fm2.api.nodejs/issues"
   },
-  "homepage": "https://github.com/jlaustill/fm2.api.nodejs"
+  "homepage": "https://github.com/jlaustill/fm2.api.nodejs",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "cors": "^2.8.1",
+    "express": "^4.14.0",
+    "express-session": "^1.14.1",
+    "multer": "^1.2.0",
+    "passport": "^0.3.2",
+    "path-posix": "^1.0.0"
+  }
 }
