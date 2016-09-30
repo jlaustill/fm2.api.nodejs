@@ -27,6 +27,9 @@
     "cors": "^2.8.1",
     "express": "^4.14.0",
     "express-session": "^1.14.1",
+    "gulp": "^3.9.1",
+    "gulp-eslint": "^3.0.1",
+    "gulp-util": "^3.0.7",
     "multer": "^1.2.0",
     "passport": "^0.3.2",
     "path-posix": "^1.0.0"

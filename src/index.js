@@ -1,9 +1,9 @@
-var express = require('express');
+var express = require("express");
 var router = express.Router();
 // var environment = require("../environment");
-var assert = require("assert");
+// var assert = require("assert");
 
-router.use('/filemanager', require('./filemanager')());
+router.use("/filemanager", require("./filemanager")());
 
 
 router.get("/", function (req, res) {

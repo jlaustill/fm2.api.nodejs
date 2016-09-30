@@ -39,7 +39,7 @@ app.use(bodyParser.json());
 // ));
 // app.use(passport.initialize());
 // app.use(passport.session());
-app.use(require('./routers'));
+app.use(require('./src'));
 
 app.use(function (req, res) {
     "use strict";
