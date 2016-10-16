@@ -1,0 +1,6 @@
+/src/*
+/upload/*
+.eslintrc
+.gitignore
+app.js
+gulpfile.js

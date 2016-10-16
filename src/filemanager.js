@@ -40,7 +40,7 @@ var config = require("./fm2.api.config.json");
 
 paths.posix = require("path-posix");
 
-function unauthorized(code) {
+function unauthorized (code) {
     "use strict";
     return {
         errors: [
@@ -54,7 +54,7 @@ function unauthorized(code) {
     };
 } // unauthorized
 
-function ensureAuthenticated(req, res, next) {
+function ensureAuthenticated (req, res, next) {
     "use strict";
     // First we check to see if passport is enabled, if not, allow access, but log it
     if (req.isAuthenticated === undefined) {
@@ -77,7 +77,7 @@ function ensureAuthenticated(req, res, next) {
     }); // return
 } // ensureAuthenticated
 
-function ensureAccess(req, path) {
+function ensureAccess (req, path) {
     "use strict";
     if (req.isAuthenticated === undefined) {
         console.log("I HIGHLY recommend you configure passport and auth :)");
@@ -90,7 +90,7 @@ function ensureAccess(req, path) {
     return req.isAuthenticated() && req.user.roles.indexOf(path.split("/")[1]) !== -1;
 }
 
-function actionAllowed(action) {
+function actionAllowed (action) {
     "use strict";
     return (config.security.capabilities.indexOf(action) !== -1);
 }
@@ -99,7 +99,7 @@ module.exports = function () {
     "use strict";
 
     // We will handle errors consistently by using a function that returns an error object
-    function errors(err) {
+    function errors (err) {
         console.log("err -> ", err);
         err = err || {}; // This allows us to call errors and just get a default error
         return {
@@ -115,7 +115,7 @@ module.exports = function () {
 
     // This is a seperate function because branch new files are uploaded and won't have an existing file
     // to get information from
-    function parseNewPath(path, callback) {
+    function parseNewPath (path, callback) {
         var parsedPath = {},
             fileRoot = config.options.fileRoot || "";
         parsedPath.uiPath = path;
@@ -137,7 +137,7 @@ module.exports = function () {
 
     // because of windows, we are going to start by parsing out all the needed path information
     // this will include original values, as well as OS specific values
-    function parsePath(path, callback) {
+    function parsePath (path, callback) {
         if (path) {
             parseNewPath(path, function (parsedPath) {
                 fs.stat(parsedPath.osFullPath, function (err, stats) {
@@ -165,7 +165,7 @@ module.exports = function () {
 
     // This function will create the return object for a file.  This keeps it consistent and
     // adheres to the DRY principle
-    function fileInfo(pp, callback) {
+    function fileInfo (pp, callback) {
         var result = {
             "path": (pp.uiPath),
             "dir": paths.posix.parse(pp.uiPath).dir,
@@ -191,7 +191,7 @@ module.exports = function () {
 
     // This function will create the return object for a directory.  This keeps it consistent and
     // adheres to the DRY principle
-    function directoryInfo(pp, callback) {
+    function directoryInfo (pp, callback) {
         var result = {
             "path": (pp.uiPath),
             "dir": paths.posix.parse(pp.uiPath).dir,
@@ -218,7 +218,7 @@ module.exports = function () {
 
     // Getting information is different for a file than it is for a directory, so here
     // we make sure we are calling the right function.
-    function getinfo(pp, callback) {
+    function getinfo (pp, callback) {
         if (pp.isDirectory) {
             directoryInfo(pp, function (result) {
                 callback(result);
@@ -234,7 +234,7 @@ module.exports = function () {
 
     // This function exists merely to capture the index and and pp(parsedPath) information in the for loop
     // otherwise the for loop would finish before our async functions
-    function getIndividualFileInfo(pp, files, loopInfo, callback, $index, req) {
+    function getIndividualFileInfo (pp, files, loopInfo, callback, $index, req) {
         parsePath(paths.posix.join(pp.uiPath, files[$index]), function (err, ipp) {
             if (err) {
                 return callback(err);
@@ -254,7 +254,7 @@ module.exports = function () {
         });//parsePath
     }//getIndividualFileInfo
 
-    function getfolder(pp, callback, req) {
+    function getfolder (pp, callback, req) {
         fs.stat(pp.osFullPath, function (err) {
             if (err) {
                 console.log("err -> ", err);
@@ -287,7 +287,7 @@ module.exports = function () {
     }//getinfo
 
     // function to delete a file/folder
-    function deleteItem(pp, callback) {
+    function deleteItem (pp, callback) {
         getinfo(pp, function (item) {
             if (pp.isDirectory === true) {
                 fs.rmdir(pp.osFullPath, function (err) {
@@ -310,7 +310,7 @@ module.exports = function () {
     }//deleteItem
 
     // function to add a new folder
-    function addfolder(pp, name, callback) {
+    function addfolder (pp, name, callback) {
         fs.mkdir(paths.join(pp.osFullPath, name), function (err) {
             if (err) {
                 return callback(errors(err));
@@ -325,7 +325,7 @@ module.exports = function () {
 
     //function to save a replaced file, tried to combine this with save new files, but it
     // just got to complicated
-    function replacefile(pp, file, callback) {
+    function replacefile (pp, file, callback) {
         var oldfilename = paths.join(__appRoot, file.path),
 
             newfilename = paths.join(
@@ -347,7 +347,7 @@ module.exports = function () {
         });//fs.rename
     }//replacefile
 
-    function savefile(pp, file, callback) {
+    function savefile (pp, file, callback) {
         var oldfilename = paths.join(__appRoot, file.path),
 
             newfilename = paths.join(
@@ -372,7 +372,7 @@ module.exports = function () {
     }//savefile
 
     // function to rename files
-    function rename(old, newish, callback) {
+    function rename (old, newish, callback) {
         fs.rename(old.osFullPath, newish.osFullPath, function (err) {
             if (err) {
                 return callback(errors(err));
@@ -392,7 +392,7 @@ module.exports = function () {
         }); //fs.rename
     }//rename
 
-    function respond(res, obj) {
+    function respond (res, obj) {
         if (obj.errors) {
             console.log("respond err -> ", obj);
             res.json(obj);
@@ -426,19 +426,19 @@ module.exports = function () {
     // This route saves a new file
     // Access: Authenticated, allowed and folder access
         .post(ensureAuthenticated, upload.single("file"), function (req, res) {
-            if (actionAllowed("upload") && ensureAccess(req, req.body.path)) {
-                parsePath(req.body.path, function (err, pp) {
-                    if (err) {
-                        respond(res, err);
-                    } else {
+            parsePath(req.body.path, function (err, pp) {
+                if (err) {
+                    respond(res, err);
+                } else {
+                    if (actionAllowed("upload") && ensureAccess(req, req.body.path)) {
                         savefile(pp, req.file, function (result) {
                             respond(res, result);
-                        });//savefiles
-                    } // if err
-                }); //parsePath
-            } else {
-                respond(res, unauthorized(req.body.path));
-            } //if allowed
+                        }); // savefiles
+                    } else {
+                        respond(res, unauthorized(req.body.path));
+                    } //if allowed
+                } // if err
+            }); //parsePath
         })//post
         // This route replaces a file, it uses the replace name so no changing of extensions is permitted
         // Access: Authenticated, allowed, and folder access
@@ -566,21 +566,17 @@ module.exports = function () {
     // and whatever is appropiate
     router.route("/item/preview")
     // This action just downloads the preview
-    // Access: Authenticated, and folder access
-        .get(ensureAuthenticated, function (req, res) {
-            if (ensureAccess(req, req.query.path)) {
-                parsePath(req.query.path, function (err, pp) {
-                    if (err) {
-                        respond(res, err);
-                    } else {
-                        res.setHeader("content-disposition", "attachment; filename=" + pp.filename);
-                        res.setHeader("content-type", "application/octet-stream");
-                        res.sendFile(pp.osFullPath);
-                    } // if err
-                }); //parsePath
-            } else {
-                respond(res, unauthorized(req.query.path));
-            } //if allowed
+    // Access: Wide open for embedding with tinymce etc etc
+        .get(function (req, res) {
+            parsePath(req.query.path, function (err, pp) {
+                if (err) {
+                    respond(res, err);
+                } else {
+                    res.setHeader("content-disposition", "attachment; filename=" + pp.filename);
+                    res.setHeader("content-type", "application/octet-stream");
+                    res.sendFile(pp.osFullPath);
+                } // if err
+            }); //parsePath
         }); // route: /item/preview
 
     // This endpoint will deal with folders specifically
