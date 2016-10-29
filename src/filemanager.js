@@ -1,10 +1,10 @@
 /**
  * Created by Joshua.Austill on 8/11/2016.
 
- This connector is actually an api, so you can use it on a seperate server from your ui.  However, because of this, it will require
+ This connector is actually an api, so you can use it on a separate server from your ui.  However, because of this, it will require
  a bit more setup than your average connector.
 
- Firstly, you will need a global variable for the application root, why this isn't a standard nodejs variable is seriously
+ Firstly, you will need a global variable for the application root, why this isn't a standard Node.js variable is seriously
  beyond me.  Just copy and paste this into your app.js, or whatever file you use for your root
 
  global.__appRoot = path.normalize(__dirname);
@@ -15,18 +15,16 @@
 
  npm install --save path-posix
 
- And you should be good to go there.  I named it paths instead of path in this file because RichFilemanager is passing in a path variable
+ And you should be good to go there.  I named it paths instead of path in this file because fm2 is passing in a path variable
  and I wanted to keep them as clear as possible.
 
- Next, you will need a copy of your filemanager.config.json file in /config .  This is to keep from having to do an ajax request back to the ui
- for every single request.  Hopefully in future we will get the server side and client side config seperated into two seperate files.  In the
- mean-time, this means keeping two copies of your config when using nodejs, not ideal, sorry.
+ Next, you will need to set your settings in fm2.api.config.json.
 
  Lastly, you will need to require this file and use it as a route.  My call looks like this
 
  router.use('/filemanager', require('./filemanager')());
 
- If you are new to nodejs and express, the first parameter defines the endpoint, and the second the loading of this file.
+ If you are new to Node.js and express, the first parameter defines the endpoint, and the second the loading of this file.
  */
 /*global __appRoot*/
 
