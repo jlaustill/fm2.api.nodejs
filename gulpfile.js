@@ -10,7 +10,7 @@ gulp.task("static", function () {
     "use strict";
     return gulp.src([
         "./src/filemanager.js",
-        "./src/fm2.api.config.json"
+        "./src/fm2.api.config.default.json"
     ])
         .pipe(gulp.dest("./dist"));
 });

@@ -33,8 +33,8 @@ var router = express.Router();
 var fs = require("fs");
 var paths = require("path");
 var multer  = require("multer");
-var upload = multer({ dest: "upload/"});
-var config = require("./fm2.api.config.json");
+var config = require("./fm2.api.config.default.json");
+var upload = multer({ dest: config.options.uploadPath});
 
 paths.posix = require("path-posix");
 

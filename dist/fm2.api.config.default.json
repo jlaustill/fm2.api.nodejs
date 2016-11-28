@@ -1,6 +1,7 @@
 {
   "options": {
-    "fileRoot": "./../filemanager"
+    "fileRoot": "./../filemanager",
+    "uploadPath": "../uploads"
   },
   "security": {
     "capabilities": [ "select", "upload", "download", "rename", "move", "delete", "replace" ],
