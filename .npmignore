@@ -4,3 +4,4 @@
 .gitignore
 app.js
 gulpfile.js
+/dist/fm2.api.config.json

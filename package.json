@@ -1,6 +1,6 @@
 {
   "name": "fm2.api.nodejs",
-  "version": "0.0.1",
+  "version": "0.0.5",
   "description": "An API backend to work with fm2.",
   "main": "/dist/filemanager.js",
   "scripts": {

@@ -33,8 +33,8 @@ var router = express.Router();
 var fs = require("fs");
 var paths = require("path");
 var multer  = require("multer");
-var config = require("./fm2.api.config.default.json");
-var upload = multer({ dest: config.options.uploadPath});
+var config = require("./fm2.api.config.json");
+var upload = multer({ dest: paths.resolve(__appRoot, config.options.uploadPath)});
 
 paths.posix = require("path-posix");
 
@@ -346,7 +346,7 @@ module.exports = function () {
     }//replacefile
 
     function savefile (pp, file, callback) {
-        var oldfilename = paths.join(__appRoot, file.path),
+        var oldfilename = file.path,
 
             newfilename = paths.join(
                 pp.osExecutionPath,
