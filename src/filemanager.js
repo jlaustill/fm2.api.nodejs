@@ -28,73 +28,69 @@
  */
 /*global __appRoot*/
 
-var express = require("express");
-var router = express.Router();
-var fs = require("fs");
-var paths = require("path");
-var multer  = require("multer");
-var config = require("./fm2.api.config.json");
-var upload = multer({ dest: paths.resolve(__appRoot, config.options.uploadPath)});
 
-paths.posix = require("path-posix");
-
-function unauthorized (code) {
+module.exports = function (config) {
     "use strict";
-    return {
-        errors: [
-            {
-                status: "403",
-                code: code,
-                title: "Unauthorized Access",
-                detail: "You do not have access to this resource.  If you require access, contact the help desk to request access."
-            }
-        ]
-    };
-} // unauthorized
 
-function ensureAuthenticated (req, res, next) {
-    "use strict";
-    // First we check to see if passport is enabled, if not, allow access, but log it
-    if (req.isAuthenticated === undefined) {
-        console.log("I HIGHLY recommend you configure passport and auth :)");
-        return next();
+    var express = require("express");
+    var router = express.Router();
+    var fs = require("fs");
+    var paths = require("path");
+    var multer  = require("multer");
+    var upload = multer({ dest: paths.resolve(__appRoot, config.options.uploadPath)});
+
+    paths.posix = require("path-posix");
+
+    function unauthorized (code) {
+        return {
+            errors: [
+                {
+                    status: "403",
+                    code: code,
+                    title: "Unauthorized Access",
+                    detail: "You do not have access to this resource.  If you require access, contact the help desk to request access."
+                }
+            ]
+        };
+    } // unauthorized
+
+    function ensureAuthenticated (req, res, next) {
+        // First we check to see if passport is enabled, if not, allow access, but log it
+        if (req.isAuthenticated === undefined) {
+            console.log("I HIGHLY recommend you configure passport and auth :)");
+            return next();
+        }
+        // Otherwise, if user is authenticated in the session, carry on
+        if (req.isAuthenticated()) {
+            return next();
+        }
+        // Otherwise return an error
+        return res.json({
+            errors: [
+                {
+                    status: "401",
+                    title: "Unauthenticated Access",
+                    detail: "You must be logged in to access this resource.  If you are unable to login, or don't have a login, contact the help desk to request access."
+                }
+            ]
+        }); // return
+    } // ensureAuthenticated
+
+    function ensureAccess (req, path) {
+        if (req.isAuthenticated === undefined) {
+            console.log("I HIGHLY recommend you configure passport and auth :)");
+            return true;
+        }
+        if (req.isAuthenticated() && req.user.roles === undefined) {
+            console.log("I HIGHLY recommend you configure roles for folder access :)");
+            return true;
+        }
+        return req.isAuthenticated() && req.user.roles.indexOf(path.split("/")[1]) !== -1;
     }
-    // Otherwise, if user is authenticated in the session, carry on
-    if (req.isAuthenticated()) {
-        return next();
-    }
-    // Otherwise return an error
-    return res.json({
-        errors: [
-            {
-                status: "401",
-                title: "Unauthenticated Access",
-                detail: "You must be logged in to access this resource.  If you are unable to login, or don't have a login, contact the help desk to request access."
-            }
-        ]
-    }); // return
-} // ensureAuthenticated
 
-function ensureAccess (req, path) {
-    "use strict";
-    if (req.isAuthenticated === undefined) {
-        console.log("I HIGHLY recommend you configure passport and auth :)");
-        return true;
+    function actionAllowed (action) {
+        return (config.security.capabilities.indexOf(action) !== -1);
     }
-    if (req.isAuthenticated() && req.user.roles === undefined) {
-        console.log("I HIGHLY recommend you configure roles for folder access :)");
-        return true;
-    }
-    return req.isAuthenticated() && req.user.roles.indexOf(path.split("/")[1]) !== -1;
-}
-
-function actionAllowed (action) {
-    "use strict";
-    return (config.security.capabilities.indexOf(action) !== -1);
-}
-
-module.exports = function () {
-    "use strict";
 
     // We will handle errors consistently by using a function that returns an error object
     function errors (err) {
